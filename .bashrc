@@ -1,6 +1,7 @@
 # rg - line based grep word
 # fd - aka fdfind - find directory
 # fzf - fizzy finder
+# z - zoxide, smart directory
 
 export EDITOR='nvim'
 
