@@ -81,7 +81,7 @@ nnoremap <silent> ,t :vsp ~/.tmux.conf <CR>
 
 " set autochdir - auto change dir to the file director
 " above may cause plugin not work, then use the following
-" autocmd BufEnter * silent! lcd %:p:h
+ autocmd BufEnter * silent! lcd %:p:h
 
 " session
 let g:session_autoload = "yes"
