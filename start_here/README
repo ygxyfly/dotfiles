@@ -1,0 +1,7 @@
+# how to set up dotfiles
+
+mkdir $HOME/.dotfiles
+alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
+echo "alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles --work-tree=$HOME'" >> $HOME/.bashrc
+dotfiles branch -M main
+dotfiles config --local status.showUntrackedFiles no
