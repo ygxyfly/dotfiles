@@ -18,8 +18,15 @@ dotfiles checkout
 
 # install
 - nvim
+- nvim.appimage
+- vim-plug
+
 - tmux
+- tpm
+
+- others
 - rg
 - fd
 - fzf
 - z
+- fpp

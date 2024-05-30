@@ -17,7 +17,9 @@ Plug 'princejoogie/dir-telescope.nvim'
 Plug 'tpope/vim-fugitive'
 
 " color
-Plug 'flazz/vim-colorschemes'
+Plug 'flazz/vim-colorschemes' " color
+"Plug 'folke/tokyonight.nvim'
+"Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
 
 " nerdtree
 Plug 'preservim/nerdtree'
@@ -34,7 +36,7 @@ Plug 'kshenoy/vim-signature'
 " move around
 Plug 'easymotion/vim-easymotion'
 
-" color words
+" mark words
 Plug 'inkarkat/vim-ingo-library' "vim-mark dependence
 Plug 'inkarkat/vim-mark'
 
@@ -44,11 +46,30 @@ Plug 'lifepillar/vim-mucomplete'
 " match quotes andd brackts
 Plug 'Raimondi/delimitMate'
 
-call plug#end()
+" vim tmux navigator
+Plug 'christoomey/vim-tmux-navigator'
 
+call plug#end()
 
 "" Map leader
 let mapleader='\'
+
+
+" tabs
+set expandtab
+
+"" auto indentation bases on file types
+autocmd FileType text setlocal shiftwidth=2 tabstop=2
+autocmd FileType markdown setlocal shiftwidth=2 tabstop=2
+autocmd FileType python setlocal shiftwidth=4 tabstop=4
+
+" file
+filetype indent plugin on
+set smartindent
+set autoindent
+set wrapscan
+set wrap
+set textwidth=240
 
 
 set statusline=%F%m%r\ %=col:%c,\ %l/%L\ %p%%
@@ -57,7 +78,15 @@ set statusline=%F%m%r\ %=col:%c,\ %l/%L\ %p%%
 set relativenumber
 
 " color
-colorscheme molokai
+colorscheme vim
+"colorscheme molokai
+"colorscheme tokyonight-night
+"colorscheme tokyonight
+"colorscheme tokyonight-storm
+"colorscheme tokyonight-day
+"colorscheme tokyonight-moon
+"colorscheme catppuccin catppuccin-latte, catppuccin-frappe, catppuccin-macchiato, catppuccin-mocha
+"colorscheme catppuccin-frappe
 
 " highlight in visual mode selection
 highlight Visual cterm=bold ctermbg=Blue ctermfg=NONE
@@ -81,7 +110,7 @@ nnoremap <silent> ,t :vsp ~/.tmux.conf <CR>
 
 " set autochdir - auto change dir to the file director
 " above may cause plugin not work, then use the following
- autocmd BufEnter * silent! lcd %:p:h
+autocmd BufEnter * silent! lcd %:p:h
 
 " session
 let g:session_autoload = "yes"
@@ -100,25 +129,23 @@ inoremap \' """<esc>o"""<esc>ka
 nnoremap ," viw<esc>a"<esc>bi"<esc>ww
 nnoremap ,' viw<esc>a'<esc>bi'<esc>ww
 
-" move line
-nnoremap <C-J> o<Esc> kk
-nnoremap <C-K> O<Esc> 
-
 
 " Telescope command-line sugar.
-nnoremap <leader>ff <cmd>Telescope find_files <cr>
-nnoremap <leader>fg <cmd>Telescope live_grep<cr>
-nnoremap <leader>fb <cmd>Telescope buffers<cr>
+"nnoremap <leader>ff <cmd>Telescope find_files <cr>
+"nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+"nnoremap <leader>fs <cmd>Telescope grep_string<cr>
+
 nnoremap <leader>fo <cmd>Telescope oldfiles<cr>
-nnoremap <leader>fs <cmd>Telescope grep_string<cr>
+nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
-"nnoremap <leader>ff <cmd>Telescope find_files search_dirs={"~/github/algorithm/"}<cr>
+
+nnoremap <leader>ff <cmd>Telescope find_files search_dirs={"/home/bo.fu/mapping/map-tools/lat/"}<cr>
+nnoremap <leader>fg <cmd>Telescope live_grep search_dirs={"/home/bo.fu/mapping/map-tools/lat/"}<cr>
+nnoremap <leader>fs <cmd>Telescope grep_string search_dirs={"/home/bo.fu/mapping/map-tools/lat/"}<cr>
+
+" Telescope dir first
 nnoremap <leader>fdf <cmd>Telescope dir find_files <cr>
 nnoremap <leader>fdg <cmd>Telescope dir live_grep<cr>
-nnoremap <leader>fdb <cmd>Telescope dir buffers<cr>
-nnoremap <leader>fdo <cmd>Telescope dir oldfiles<cr>
-nnoremap <leader>fds <cmd>Telescope dir grep_string<cr>
-nnoremap <leader>fdh <cmd>Telescope dir help_tags<cr>
 
 " nerdtree
 nnoremap ,nt :NERDTree %<CR>
@@ -158,13 +185,15 @@ nnoremap <F7> :vsp <C-r><C-f> <cr>
 nnoremap <F8> :tabe <C-r><C-f> <cr>
 
 
+" fugitive
+set diffopt+=vertical
 
 " run cmd
 nnoremap ,p   :wa <Bar> :lcd %:p:h<Bar>!python %<CR>
 nnoremap ,pp   :wa <Bar> :lcd %:p:h<Bar>!python % &> %.out &<CR>
 nnoremap ,o  :wa <Bar> :vsp %.out <CR>
 "
-" use when different terminals has problem to load 
+" use when different terminals has problem to load
 nnoremap ,os :OpenSession! default <CR>
 nnoremap ,ss :SaveSession! default <CR>
 
@@ -183,3 +212,24 @@ ab PD import pandas as pd
 ab MP import multiprocessing as mp
 
 ab IF if __name__=='__main__':
+
+nnoremap ,ca :vsp ~/.idle/.repo/my_argo/bin/newBranch.sh<CR>
+
+
+
+" move line
+"nnoremap <C-J> <C-W><C-J>
+"nnoremap <C-K> <C-W><C-K>
+"nnoremap <C-L> <C-W><C-L>
+"nnoremap <C-H> <C-W><C-H>
+
+"set splitbelow
+"set splitright
+
+
+" set tab color
+"TabLineSel - is the current (so to say) active tab label.
+"TabLine - are the labels which are not currently active.
+"TabLineFill - is the remaining of the tabline where there is no labels (background).
+hi TabLineSel ctermfg=black ctermbg=gray
+
