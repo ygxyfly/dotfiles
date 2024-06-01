@@ -40,14 +40,38 @@ Plug 'easymotion/vim-easymotion'
 Plug 'inkarkat/vim-ingo-library' "vim-mark dependence
 Plug 'inkarkat/vim-mark'
 
-" simple autocomplete
-Plug 'lifepillar/vim-mucomplete'
-
 " match quotes andd brackts
 Plug 'Raimondi/delimitMate'
 
 " vim tmux navigator
 Plug 'christoomey/vim-tmux-navigator'
+
+" lsp manager
+Plug 'williamboman/mason.nvim'
+
+" lsp server config
+Plug 'williamboman/mason-lspconfig.nvim'
+
+" nvim lsp config
+Plug 'neovim/nvim-lspconfig'
+
+" cmp
+Plug 'hrsh7th/cmp-nvim-lsp'  " LSP source for nvim-cmp
+Plug 'hrsh7th/cmp-buffer' " buffer as source
+Plug 'hrsh7th/nvim-cmp' "auto completion plugin
+
+" For vsnip users.
+Plug 'hrsh7th/cmp-vsnip'
+Plug 'hrsh7th/vim-vsnip'
+
+"use pyright
+"pyproject.toml
+"[tool.pyright]
+"venvPath="/home/<username>/.cache/pypoetry/virtualenvs"
+"venv="<venv-name>"
+"pyrightconfig.json
+"venvPath": ".",
+"venv": ".venv",
 
 call plug#end()
 
@@ -60,16 +84,17 @@ set expandtab
 
 "" auto indentation bases on file types
 autocmd FileType text setlocal shiftwidth=2 tabstop=2
+autocmd FileType json setlocal shiftwidth=4 tabstop=4
 autocmd FileType markdown setlocal shiftwidth=2 tabstop=2
 autocmd FileType python setlocal shiftwidth=4 tabstop=4
 
 " file
-filetype indent plugin on
-set smartindent
-set autoindent
+"filetype indent plugin on
+"set smartindent
+"set autoindent
 set wrapscan
 set wrap
-set textwidth=240
+set textwidth=80
 
 
 set statusline=%F%m%r\ %=col:%c,\ %l/%L\ %p%%
@@ -78,8 +103,8 @@ set statusline=%F%m%r\ %=col:%c,\ %l/%L\ %p%%
 set relativenumber
 
 " color
-colorscheme vim
-"colorscheme molokai
+"colorscheme vim
+colorscheme molokai
 "colorscheme tokyonight-night
 "colorscheme tokyonight
 "colorscheme tokyonight-storm
@@ -137,8 +162,10 @@ nnoremap ,' viw<esc>a'<esc>bi'<esc>ww
 
 nnoremap <leader>fo <cmd>Telescope oldfiles<cr>
 nnoremap <leader>fb <cmd>Telescope buffers<cr>
+nnoremap <leader>fd <cmd>Telescope diagnostics<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 
+" commonly used directory
 nnoremap <leader>ff <cmd>Telescope find_files search_dirs={"/home/bo.fu/mapping/map-tools/lat/"}<cr>
 nnoremap <leader>fg <cmd>Telescope live_grep search_dirs={"/home/bo.fu/mapping/map-tools/lat/"}<cr>
 nnoremap <leader>fs <cmd>Telescope grep_string search_dirs={"/home/bo.fu/mapping/map-tools/lat/"}<cr>
@@ -162,12 +189,6 @@ map <F9> <leader>/
 map <F10> <leader>?
 map <F11> <leader>*
 map <F12> <leader>#
-
-" autocomplete
-set completeopt-=preview
-set completeopt+=menuone,noselect
-let g:mucomplete#enable_auto_at_startup = 0
-nnoremap ,ac ::MUcompleteAutoToggle<CR>
 
 " session
 let g:session_autoload = "yes"
@@ -227,9 +248,88 @@ nnoremap ,ca :vsp ~/.idle/.repo/my_argo/bin/newBranch.sh<CR>
 "set splitright
 
 
-" set tab color
+" set nvim tab color
 "TabLineSel - is the current (so to say) active tab label.
 "TabLine - are the labels which are not currently active.
 "TabLineFill - is the remaining of the tabline where there is no labels (background).
-hi TabLineSel ctermfg=black ctermbg=gray
+hi TabLineSel ctermfg=black ctermbg=red
+hi TabLine ctermfg=black ctermbg=gray
 
+
+
+lua << EOF
+require("nvim-treesitter.configs").setup{
+highlight = {
+enable = true,
+},
+indent = {enable = true}
+}
+
+require("mason").setup()
+require("mason-lspconfig").setup {
+ensure_installed = { "pyright" },
+}
+
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+local lspconfig = require("lspconfig")
+-- Enable some language servers with the additional completion capabilities offered by nvim-cmp
+local servers = { 'pyright'}
+for _, lsp in ipairs(servers) do
+lspconfig[lsp].setup {
+        capabilities = capabilities
+}
+end
+
+-- Set up nvim-cmp.
+local cmp = require('cmp')
+cmp.setup({
+snippet = {
+-- REQUIRED - you must specify a snippet engine
+expand = function(args)
+vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+-- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+-- require('snippy').expand_snippet(args.body) -- For `snippy` users.
+-- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+-- vim.snippet.expand(args.body) -- For native neovim snippets (Neovim v0.10+)
+end,
+},
+window = {
+completion = cmp.config.window.bordered(),
+documentation = cmp.config.window.bordered(),
+},
+mapping = cmp.mapping.preset.insert({
+['<C-b>'] = cmp.mapping.scroll_docs(-4),
+['<C-f>'] = cmp.mapping.scroll_docs(4),
+['<C-Space>'] = cmp.mapping.complete(),
+['<C-e>'] = cmp.mapping.abort(),
+['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+['<Tab>'] = cmp.mapping(function(fallback)
+if cmp.visible() then
+cmp.select_next_item()
+elseif luasnip.expand_or_jumpable() then
+luasnip.expand_or_jump()
+else
+fallback()
+end
+end, { 'i', 's' }),
+['<S-Tab>'] = cmp.mapping(function(fallback)
+if cmp.visible() then
+cmp.select_prev_item()
+elseif luasnip.jumpable(-1) then
+luasnip.jump(-1)
+else
+fallback()
+end
+end, { 'i', 's' }),
+}),
+sources = cmp.config.sources({
+{ name = 'nvim_lsp' },
+{ name = 'vsnip' }, -- For vsnip users.
+-- { name = 'luasnip' }, -- For luasnip users.
+-- { name = 'ultisnips' }, -- For ultisnips users.
+-- { name = 'snippy' }, -- For snippy users.
+}, {
+{ name = 'buffer' },
+})
+})
+EOF
