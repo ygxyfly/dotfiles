@@ -2,6 +2,11 @@
 # fd - aka fdfind - find directory
 # fzf - fizzy finder
 # z - zoxide, smart directory
+# bat - replace cat for highlight, batcat
+# lazygit
+# lazydocker
+# btop to replace top
+# tldr comminuty readable man page
 
 export EDITOR='nvim'
 
@@ -33,8 +38,11 @@ set -o vi
 # git auto complete
 source $PYPATH/config/git-completion.bash
 
-#export PS1="[\u@\h \w]$"
-export PS1="\h \w$ "
+parse_git_branch() {
+     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+}
+export PS1="\[\e[32m\]\w \[\e[91m\]\$(parse_git_branch)\[\e[00m\]$ "
+
 
 # history
 HISTSIZE=5000
@@ -92,3 +100,7 @@ export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
 
 # for dotfile
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+
+alias dcu="docker compose up"
+alias dcd="docker compose down"
+alias ta="tmux a"
