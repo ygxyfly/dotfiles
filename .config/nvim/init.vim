@@ -46,17 +46,8 @@ set diffopt+=vertical
 
 " color
 "Plug 'flazz/vim-colorschemes' " color
-"Plug 'folke/tokyonight.nvim'
+Plug 'folke/tokyonight.nvim'
 Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
-"colorscheme vim
-"colorscheme molokai
-"colorscheme tokyonight-night
-"colorscheme tokyonight
-"colorscheme tokyonight-storm
-"colorscheme tokyonight-day
-"colorscheme tokyonight-moon
-"colorscheme catppuccin catppuccin-latte, catppuccin-frappe, catppuccin-macchiato, catppuccin-mocha
-colorscheme catppuccin-mocha
 
 " nerdtree
 Plug 'preservim/nerdtree'
@@ -123,6 +114,17 @@ Plug 'hrsh7th/vim-vsnip'
 "venv": ".venv",
 
 call plug#end()
+
+" colorscheme - cannot put in the plub block which requires reload
+"colorscheme vim
+"colorscheme molokai
+colorscheme tokyonight-night
+"colorscheme tokyonight
+"colorscheme tokyonight-storm
+"colorscheme tokyonight-day
+"colorscheme tokyonight-moon
+"colorscheme catppuccin catppuccin-latte, catppuccin-frappe, catppuccin-macchiato, catppuccin-mocha
+"colorscheme catppuccin-mocha
 
 
 "" Map leader
